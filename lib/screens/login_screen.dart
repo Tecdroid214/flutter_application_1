@@ -9,15 +9,43 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Estado para mostrar/ocultar contraseña
-  bool _obscurePassword = true;
+  bool obscurePassword = true;
 
-  // Cerebro de las animaciones
+  // Cerebro de la lógica de las animaciones
   StateMachineController? controller;
-  SMIBool? isChecking; // sigue con la mirada
-  SMIBool? isHandsUp; // se tapa los ojos
-  SMITrigger? trigSuccess; // cuando acierta
-  SMITrigger? trigFail; // cuando falla
+  // SMI: State Machine Input
+  SMIBool? isChecking; // Activa el modo chismoso
+  SMIBool? isHandsUp; // Se tapa los ojos
+  SMITrigger? trigSuccess; // Se emociona
+  SMITrigger? trigFail; // Se pone triste
+
+  // 1) FocusNode (FALTABA LOS PARÉNTESIS)
+  final emailFocus = FocusNode();
+  final passFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 2) Listeners
+    emailFocus.addListener(() {
+      if (emailFocus.hasFocus) {
+        isHandsUp?.change(false);
+      }
+    });
+
+    passFocus.addListener(() {
+      isHandsUp?.change(passFocus.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    // Liberar memoria
+    emailFocus.dispose();
+    passFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               SizedBox(
@@ -34,138 +62,121 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 200,
                 child: RiveAnimation.asset(
                   'assets/animated_login_character.riv',
-                  stateMachines: ["Login Machine"], //  asegúrate que coincide
+                  stateMachines: ["Login Machine"],
                   onInit: (artboard) {
                     controller = StateMachineController.fromArtboard(
                       artboard,
-                      "Login Machine", //  usa el mismo nombre exacto
+                      "Login Machine",
                     );
-
-                    if (controller == null) {
-                      debugPrint("❌ No se encontró la máquina de estados");
-                      return;
-                    }
+                    if (controller == null) return;
                     artboard.addController(controller!);
-
-                    // Buscar inputs (los nombres deben coincidir con tu .riv)
-                    isChecking = controller!.findSMI("isChecking");
-                    isHandsUp = controller!.findSMI("isHandsUp");
-                    trigSuccess = controller!.findSMI("trigSuccess");
-                    trigFail = controller!.findSMI("trigFail");
-
-                    debugPrint("✅ isChecking: $isChecking");
-                    debugPrint("✅ isHandsUp: $isHandsUp");
-                    debugPrint("✅ trigSuccess: $trigSuccess");
-                    debugPrint("✅ trigFail: $trigFail");
+                    isChecking = controller!.findSMI('isChecking');
+                    isHandsUp = controller!.findSMI('isHandsUp');
+                    trigSuccess = controller!.findSMI('trigSuccess');
+                    trigFail = controller!.findSMI('trigFail');
                   },
-                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Campo de texto Email
               TextField(
+                focusNode: emailFocus,
                 onChanged: (value) {
-                  // Al escribir → seguir con la mirada
                   if (isHandsUp != null) {
                     isHandsUp!.change(false);
                   }
-                  if (isChecking != null) {
-                    isChecking!.change(value.isNotEmpty);
-                  }
+                  if (isChecking == null) return;
+                  isChecking!.change(true);
                 },
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "Introduce tu Email",
+                  labelText: 'Email',
                   prefixIcon: const Icon(Icons.mail),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-
-              // Campo de texto Contraseña con ojito invertido
+              const SizedBox(height: 12),
               TextField(
-                obscureText: _obscurePassword,
+                focusNode: passFocus,
+                onChanged: (value) {
+                  if (isChecking != null) {
+                    isChecking!.change(false);
+                  }
+                  if (isHandsUp == null) return;
+                  // isHandsUp!.change(true); // Comentado por ti
+                },
+                obscureText: obscurePassword,
                 decoration: InputDecoration(
-                  hintText: "Contraseña",
+                  labelText: 'Password',
                   prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons
-                              .visibility // 👁 oculta → se ve el icono normal
-                          : Icons.visibility_off, // 🚫 visible → tachado
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-
-                        // 👁 Si muestro la contraseña → personaje se tapa los ojos
-                        if (isHandsUp != null) {
-                          isHandsUp!.change(!_obscurePassword);
-                        }
-                      });
-                    },
-                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
-
               SizedBox(
                 width: size.width,
-                child: const Text(
-                  "forgot your password?",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(decoration: TextDecoration.underline),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Forgot your password?',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-
+              const SizedBox(height: 10),
               MaterialButton(
-                onPressed: () {
-                  // Aquí ejemplo de disparar animaciones de éxito/fallo
-                  if (trigSuccess != null) {
-                    trigSuccess!.fire();
-                  }
-                },
-                color: const Color.fromARGB(255, 243, 33, 198),
                 minWidth: size.width,
                 height: 50,
+                color: Colors.purple,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+                onPressed: () {},
                 child: const Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  'Login',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               const SizedBox(height: 10),
-
               SizedBox(
                 width: size.width,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account? "),
+                    const Text("New here?"),
                     TextButton(
                       onPressed: () {},
                       child: const Text(
-                        "register",
+                        "Register",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
