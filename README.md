@@ -164,9 +164,15 @@ assets/
 pubspec.yaml                        # Dependencies and Flutter config
 ````
 
-## 🎨 DEMO:
+## 🎨DEMO:
 <img width="770" height="903" alt="image" src="https://github.com/user-attachments/assets/d5590e0d-191f-4173-94fc-12f79296a27b" />
 (https://youtube.com/shorts/R29p-7g3KzA?feature=share)
+
+
+
+## ⚙️Creador 
+
+Rive animation used in this project: https://rive.app/marketplace/3645-7621-remix-of-login-machine/
 
 
 
