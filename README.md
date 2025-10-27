@@ -1,6 +1,51 @@
 # 🐻Animated Bear Login
 
-Welcome to the Animated Bear Login project
+### Welcome to the Animated Bear Login project
+
+__Name:__ David Moisés Gamboa Cel 
+
+__Teacher:__ Rodrigo Fidel Gaxiola Sosa
+
+__subject:__ Graficación
+
+
+
+## ¿Qué es Rive? 🐻
+
+**Rive** es una herramienta de diseño y animación en tiempo real.
+
+Piensa en Rive no como un video o un GIF, sino como un "mini-programa" de animación. Tú creas tu personaje y sus movimientos en el editor de Rive, y la aplicación (como tu app de Flutter) lo ejecuta en vivo.
+
+* **Es Interactivo:** Puedes controlarlo con código (como haces en tu app).
+* **Es Vectorial:** No pierde calidad si lo haces grande o pequeño.
+* **Es Ligero:** Los archivos (`.riv`) son muy pequeños, ideales para apps móviles y web.
+* **Multiplataforma:** Funciona en Flutter, Web (JavaScript), React, C++, etc.
+
+---
+
+## ¿Qué es una State Machine (Máquina de Estados)? 🧠
+
+La **State Machine (Máquina de Estados)** es el **cerebro** que controla *cómo* y *cuándo* se reproduce una animación en Rive.
+
+Es un diagrama de flujo visual que tú creas en el editor de Rive para definir la lógica. En lugar de solo "reproducir de principio a fin", le das reglas:
+
+* **Estados:** Son las animaciones (ej. "Oso\_idle", "Oso\_tapando\_ojos", "Oso\_feliz").
+* **Entradas (Inputs):** Son los "interruptores" que tu código de Flutter puede activar. En tu código, `isChecking`, `isHandsUp`, y `trigSuccess` son Entradas.
+* **Transiciones:** Son las flechas que conectan los estados. Tú defines: "Si la entrada `isHandsUp` se vuelve `true`, pasa del estado 'Oso\_idle' al estado 'Oso\_tapando\_ojos'".
+
+En resumen, la Máquina de Estados es el puente que conecta tu código de Flutter con las animaciones de Rive, permitiendo la interactividad.
+
+
+
+---
+
+## Tecnologías Relacionadas
+
+* **Editor Rive:** Es la aplicación (web o de escritorio) donde diseñas y animas. Es la competencia de herramientas como Lottie (que usa Adobe After Effects).
+* **Flutter (Dart):** Es el *framework* de tu app. Usas el paquete `package:rive/rive.dart` para poder mostrar y controlar los archivos `.riv`.
+* **Runtimes (Tiempos de ejecución):** Son las librerías de código (como la de Flutter, la de JavaScript, la de C++) que saben cómo leer un archivo `.riv` y dibujarlo en la pantalla.
+
+
 
 ## ⭐Features
 
@@ -170,7 +215,7 @@ pubspec.yaml                        # Dependencies and Flutter config
 
 
 
-## ⚙️Creador 
+## ⚙️Creador de la animación
 
 Rive animation used in this project: https://rive.app/marketplace/3645-7621-remix-of-login-machine/
 
